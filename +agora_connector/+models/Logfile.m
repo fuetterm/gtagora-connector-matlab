@@ -40,12 +40,18 @@ classdef Logfile < agora_connector.models.BaseModel
     end
 
     methods (Static)
-        function plot_traffic(requests, interval_sec)
-            if nargin == 1
+        function plot_traffic(requests, interval_sec, last_days)
+            if nargin < 2
                 interval = hours(1);
+                last_days = 14;                
+            elseif nargin < 3
+                last_days = 14;      
             else
                 interval = seconds(interval_sec);
             end
+
+            currentDate = datetime('now');
+            thresholdDate = currentDate - days(last_days);
 
             has_size = isfield(requests, 'response_size');
             has_dur = isfield(requests, 'duration');
@@ -57,6 +63,9 @@ classdef Logfile < agora_connector.models.BaseModel
             catch
                 timestamps = datetime({requests.timestamp}, 'InputFormat', 'dd/MMM/yyyy:HH:mm:ss');
             end
+            
+            requests = requests(timestamps > thresholdDate);
+            timestamps = timestamps(timestamps > thresholdDate);            
 
             % Generate time intervals (e.g., hourly)
             edges = min(timestamps):interval:max(timestamps) + interval;
