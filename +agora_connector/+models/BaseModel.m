@@ -85,7 +85,7 @@ classdef BaseModel < dynamicprops
             end
         end
         
-        function object_list = fill_from_data_array(self, data)
+        function object_list = fill_from_data_array(self, data)            
             if isfield(data, 'results') && isfield(data, 'count')
                 results = data.results;
                 if data.count == 0
@@ -107,9 +107,12 @@ classdef BaseModel < dynamicprops
                     object_list(i) = object_list(i).fill_from_data(data(i));
                     object_list(i).http_client = self.http_client;
                 end
-            else
+            elseif ~isempty(data)
                 object_list = self.fill_from_data(data);
                 object_list.http_client = self.http_client;
+            else
+                object_list = [];
+                return;
             end
         end
                         

@@ -97,7 +97,7 @@ classdef Tag < agora_connector.models.BaseModel
                     end
                 else
                     objs(i).tags = [];  
-                    if is_folder_item && isprop(objs(i), 'content_object')
+                    if is_folder_item
                         objs(i).content_object.tags = [];
                     end
                 end                
